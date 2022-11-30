@@ -1,6 +1,9 @@
+import React from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../libs/context/authContext";
 
 export default function Login() {
+  const { _login } = React.useContext(AuthContext);
   return (
     <div className="card card-outline card-primary">
       <div className="card-header text-center">
@@ -39,7 +42,11 @@ export default function Login() {
             </div>
             {/* /.col */}
             <div className="col-4">
-              <button type="submit" className="btn btn-primary btn-block">
+              <button
+                type="submit"
+                onClick={_login}
+                className="btn btn-primary btn-block"
+              >
                 Sign In
               </button>
             </div>
