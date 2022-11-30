@@ -2,7 +2,7 @@ import React from "react";
 import WarnnigAlert from "../../components/alerts/warning";
 import { AppContext } from "../../context/appContext";
 
-export default function MainApp() {
+export default function MainApp(props) {
   const {
     _handleOnchange,
     note,
@@ -14,7 +14,10 @@ export default function MainApp() {
     _closeEdit,
     _handleEdit,
     editNote,
+    _closeAlert,
   } = React.useContext(AppContext);
+
+  const user = props.user;
 
   return (
     <div className="hold-transition sidebar-mini">
@@ -24,7 +27,9 @@ export default function MainApp() {
           {/* Left navbar links */}
           <ul className="navbar-nav">
             <li className="nav-item d-none d-sm-inline-block">
-              <span className="nav-link">Welcome user name</span>
+              <span className="nav-link">
+                Welcome {user === undefined ? "" : user.userName}
+              </span>
             </li>
           </ul>
           {/* Right navbar links */}
@@ -36,6 +41,7 @@ export default function MainApp() {
                 href="#"
                 role="button"
                 title="log out"
+                onClick={props.onLogOut}
               >
                 <i className="fas fa-power-off" />
               </span>
@@ -104,7 +110,9 @@ export default function MainApp() {
               )}
             </button>
           </div>
-          {err.show ? <WarnnigAlert type={err.type} msg={err.msg} /> : null}
+          {err.show ? (
+            <WarnnigAlert type={err.type} msg={err.msg} onClose={_closeAlert} />
+          ) : null}
           <hr />
           {note.getNoteLoader ? (
             <span className="spinner-border text-muted spinner-border-sm"></span>
@@ -141,6 +149,7 @@ export default function MainApp() {
                         style={{
                           width: "15%",
                           height: "1.8rem",
+                          borderBottomWidth: 0,
                           backgroundColor:
                             title._id === note._id ? "white" : "aliceblue",
                         }}

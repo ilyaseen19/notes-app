@@ -1,8 +1,6 @@
 import React from "react";
-import { AppContext } from "../../../context/appContext";
 
 export default function WarnnigAlert(props) {
-  const { _closeAlert } = React.useContext(AppContext);
   const _renderAlertType = () => {
     if (props.type === "error") return "alert alert-danger alert-dismissible";
     if (props.type === "warning")
@@ -15,18 +13,19 @@ export default function WarnnigAlert(props) {
     <div
       className={_renderAlertType()}
       style={{
-        width: "40%",
+        width: "30rem",
         display: "flex",
         margin: "auto",
         height: "1.8rem",
         alignItems: "center",
         fontSize: 14,
+        marginBottom: 3,
       }}
     >
       <button
         type="button"
         className="close"
-        onClick={_closeAlert}
+        onClick={props.onClose}
         data-dismiss="alert"
         aria-hidden="true"
         style={{
