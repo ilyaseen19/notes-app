@@ -2,17 +2,25 @@ import React from "react";
 import _createNote from "../handlers/createNote";
 import _getnotes from "../handlers/fetchNotes";
 import _delNote from "../handlers/removeNotes";
+import _editNote from "../handlers/updateNote";
 import _sortLoans from "../libs/sortLoans";
 
 export const AppContext = React.createContext();
 
 export default function AppContextProvider(props) {
+  const [title, setTitle] = React.useState({});
+
   const [note, setNote] = React.useState({
     title: "",
     message: "",
     notes: [],
     createNoteLoader: false,
     getNoteLoader: false,
+  });
+
+  const [editNote, setEditNote] = React.useState({
+    title: "",
+    message: "",
   });
 
   const [err, setErr] = React.useState({
@@ -38,13 +46,21 @@ export default function AppContextProvider(props) {
       getNoteLoader: false,
     });
 
-    if (res.success === 0)
-      return setErr({
+    if (res.success === 0) {
+      setErr({
         ...err,
         type: "error",
         msg: res.message,
         show: true,
       });
+
+      setNote({
+        ...note,
+        notes: [],
+      });
+
+      return;
+    }
 
     let sorted = await _sortLoans(res.data);
 
@@ -156,6 +172,34 @@ export default function AppContextProvider(props) {
     await fetchNotes();
   };
 
+  const _openEdit = (data) => {
+    setTitle(data);
+  };
+
+  const _closeEdit = () => {
+    setTitle({});
+  };
+
+  const _handleEdit = (data) => {
+    if (data.field === "title") {
+      editNote.title = data.value;
+      setEditNote({
+        ...editNote,
+        title: data.value,
+      });
+    }
+
+    if (data.field === "body") {
+      editNote.message = data.value;
+      setEditNote({
+        ...editNote,
+        message: data.value,
+      });
+    }
+
+    _editNote({ newData: editNote, oldData: title });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -165,6 +209,11 @@ export default function AppContextProvider(props) {
         err,
         _closeAlert,
         _removeNote,
+        _openEdit,
+        title,
+        editNote,
+        _closeEdit,
+        _handleEdit,
       }}
     >
       {props.children}

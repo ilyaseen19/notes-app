@@ -3,8 +3,18 @@ import WarnnigAlert from "../../components/alerts/warning";
 import { AppContext } from "../../context/appContext";
 
 export default function MainApp() {
-  const { _handleOnchange, note, _handleSave, err, _removeNote } =
-    React.useContext(AppContext);
+  const {
+    _handleOnchange,
+    note,
+    _handleSave,
+    err,
+    _removeNote,
+    _openEdit,
+    title,
+    _closeEdit,
+    _handleEdit,
+    editNote,
+  } = React.useContext(AppContext);
 
   return (
     <div className="hold-transition sidebar-mini">
@@ -120,26 +130,66 @@ export default function MainApp() {
                       width: "85%",
                     }}
                   >
-                    <input
+                    <div
                       style={{
-                        width: "15%",
-                        height: "1.8rem",
-                        backgroundColor: "aliceblue",
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "baseline",
                       }}
-                      type="text"
-                      disabled={true}
-                      className="form-control mt-2"
-                      placeholder={note.title}
-                      aria-label="title"
-                    />
+                    >
+                      <input
+                        style={{
+                          width: "15%",
+                          height: "1.8rem",
+                          backgroundColor:
+                            title._id === note._id ? "white" : "aliceblue",
+                        }}
+                        onChange={(e) =>
+                          _handleEdit({
+                            field: "title",
+                            value: e.target.value,
+                          })
+                        }
+                        type="text"
+                        disabled={title._id === note._id ? false : true}
+                        className="form-control mt-2"
+                        placeholder={note.title}
+                        aria-label="title"
+                      />
+                      <div className="ml-3">
+                        Created on:{" "}
+                        <span style={{ color: "blueviolet" }}>
+                          {" "}
+                          {new Date(note.createdAt).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="ml-3">
+                        Last updated on:{" "}
+                        <span style={{ color: "blueviolet" }}>
+                          {" "}
+                          {editNote.title !== "" || editNote.message !== ""
+                            ? title._id === note._id
+                              ? new Date().toLocaleString()
+                              : new Date(note.updatedAt).toLocaleString()
+                            : new Date(note.updatedAt).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
                     <input
                       style={{
                         width: "100%",
                         height: "1.8rem",
-                        backgroundColor: "aliceblue",
+                        backgroundColor:
+                          title._id === note._id ? "white" : "aliceblue",
                       }}
+                      onChange={(e) =>
+                        _handleEdit({
+                          field: "body",
+                          value: e.target.value,
+                        })
+                      }
                       type="text"
-                      disabled={true}
+                      disabled={title._id === note._id ? false : true}
                       className="form-control"
                       placeholder={note.note}
                       aria-label="note"
@@ -148,6 +198,11 @@ export default function MainApp() {
                   <button
                     type="button"
                     className="btn ml-1"
+                    onClick={
+                      title._id === note._id
+                        ? _closeEdit
+                        : () => _openEdit(note)
+                    }
                     style={{
                       alignSelf: "flex-end",
                       width: "3%",
@@ -157,7 +212,11 @@ export default function MainApp() {
                       justifyContent: "center",
                     }}
                   >
-                    <i className="fa fa-edit" style={{ color: "blue" }} />
+                    {title._id === note._id ? (
+                      <i className="fa fa-times" style={{ color: "blue" }} />
+                    ) : (
+                      <i className="fa fa-edit" style={{ color: "blue" }} />
+                    )}
                   </button>
                   <button
                     type="button"
