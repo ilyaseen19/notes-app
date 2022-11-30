@@ -21,7 +21,7 @@ const _signIn = async (data) => {
         result = res;
       });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     result = { success: 0, message: "Cannot connect to server" };
   }
 
