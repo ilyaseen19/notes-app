@@ -1,13 +1,14 @@
 import React from "react";
+import WarnnigAlert from "../../components/alerts/warning";
 import { AppContext } from "../../context/appContext";
 
 export default function MainApp() {
-  const { _handleOnchange, note, _handleSave, notes } =
+  const { _handleOnchange, note, _handleSave, err } =
     React.useContext(AppContext);
 
   return (
     <div className="hold-transition sidebar-mini">
-      <div className="wrapper">
+      <div className="wrapper pb-5">
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
@@ -86,16 +87,21 @@ export default function MainApp() {
                 justifyContent: "center",
               }}
             >
-              <i className="fa fa-save" />
+              {note.createNoteLoader ? (
+                <span className="spinner-border text-dark spinner-border-sm"></span>
+              ) : (
+                <i className="fa fa-save" />
+              )}
             </button>
           </div>
+          {err.show ? <WarnnigAlert type={err.type} msg={err.msg} /> : null}
           <hr />
           {note.getNoteLoader ? (
             <span className="spinner-border text-muted spinner-border-sm"></span>
-          ) : notes === undefined || notes.length === 0 ? (
+          ) : note.notes === undefined || note.notes.length === 0 ? (
             <div>No notes found, please create one</div>
           ) : (
-            notes.map((note, index) => {
+            note.notes.map((note, index) => {
               return (
                 <div
                   key={index}
@@ -122,7 +128,7 @@ export default function MainApp() {
                       }}
                       type="text"
                       disabled={true}
-                      className="form-control mb-1"
+                      className="form-control mt-2"
                       placeholder={note.title}
                       aria-label="title"
                     />

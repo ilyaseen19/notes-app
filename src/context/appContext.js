@@ -1,5 +1,7 @@
 import React from "react";
+import _createNote from "../handlers/createNote";
 import _getnotes from "../handlers/fetchNotes";
+import _sortLoans from "../libs/sortLoans";
 
 export const AppContext = React.createContext();
 
@@ -29,6 +31,7 @@ export default function AppContextProvider(props) {
     });
 
     const res = await _getnotes();
+
     setNote({
       ...note,
       getNoteLoader: false,
@@ -41,6 +44,10 @@ export default function AppContextProvider(props) {
         msg: res.message,
         show: true,
       });
+
+    let sorted = await _sortLoans(res.data);
+
+    res.data = sorted;
 
     setNote({
       ...note,
@@ -63,10 +70,64 @@ export default function AppContextProvider(props) {
       });
   };
 
-  const _handleSave = async () => {};
+  const _handleSave = async () => {
+    if (note.title === "" || note.message === "")
+      return setErr({
+        ...err,
+        type: "warning",
+        msg: "all fields are required",
+        show: true,
+      });
+
+    setNote({
+      ...note,
+      createNoteLoader: true,
+    });
+
+    const res = await _createNote({ title: note.title, message: note.message });
+
+    setNote({
+      ...note,
+      createNoteLoader: false,
+    });
+
+    if (res.success === 0)
+      return setErr({
+        ...err,
+        type: "error",
+        msg: res.message,
+        show: true,
+      });
+
+    setErr({
+      ...err,
+      type: "success",
+      msg: res.message,
+      show: true,
+    });
+
+    setNote({
+      ...note,
+      title: "",
+      message: "",
+    });
+
+    await fetchNotes();
+  };
+
+  const _closeAlert = () => {
+    setErr({
+      ...err,
+      show: false,
+      msg: "",
+      type: "",
+    });
+  };
 
   return (
-    <AppContext.Provider value={{ note, _handleOnchange, _handleSave }}>
+    <AppContext.Provider
+      value={{ note, _handleOnchange, _handleSave, err, _closeAlert }}
+    >
       {props.children}
     </AppContext.Provider>
   );
