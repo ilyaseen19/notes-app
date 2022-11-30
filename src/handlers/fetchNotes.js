@@ -12,7 +12,7 @@ const _getnotes = async () => {
     result = feedback;
   } catch (error) {
     console.log(error);
-    result = { success: 0, message: "Internet connection error" };
+    result = { success: 0, message: "Cannot connect to server" };
   }
 
   return result;
