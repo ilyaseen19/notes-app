@@ -3,7 +3,7 @@ import WarnnigAlert from "../../components/alerts/warning";
 import { AppContext } from "../../context/appContext";
 
 export default function MainApp() {
-  const { _handleOnchange, note, _handleSave, err } =
+  const { _handleOnchange, note, _handleSave, err, _removeNote } =
     React.useContext(AppContext);
 
   return (
@@ -147,31 +147,32 @@ export default function MainApp() {
                   </div>
                   <button
                     type="button"
-                    className="btn btn-primary ml-1"
+                    className="btn ml-1"
                     style={{
                       alignSelf: "flex-end",
-                      width: "5%",
+                      width: "3%",
                       height: "1.8rem",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <i className="fa fa-edit" />
+                    <i className="fa fa-edit" style={{ color: "blue" }} />
                   </button>
                   <button
                     type="button"
-                    className="btn btn-danger ml-1"
+                    className="btn ml-1"
+                    onClick={() => _removeNote(note._id)}
                     style={{
                       alignSelf: "flex-end",
-                      width: "5%",
+                      width: "3%",
                       height: "1.8rem",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <i className="fa fa-trash" />
+                    <i className="fa fa-trash" style={{ color: "red" }} />
                   </button>
                 </div>
               );

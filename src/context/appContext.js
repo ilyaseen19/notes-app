@@ -1,6 +1,7 @@
 import React from "react";
 import _createNote from "../handlers/createNote";
 import _getnotes from "../handlers/fetchNotes";
+import _delNote from "../handlers/removeNotes";
 import _sortLoans from "../libs/sortLoans";
 
 export const AppContext = React.createContext();
@@ -124,9 +125,47 @@ export default function AppContextProvider(props) {
     });
   };
 
+  const _removeNote = async (id) => {
+    setNote({
+      ...note,
+      createNoteLoader: true,
+    });
+
+    const res = await _delNote(id);
+
+    setNote({
+      ...note,
+      createNoteLoader: false,
+    });
+
+    if (res.success === 0)
+      return setErr({
+        ...err,
+        type: "error",
+        msg: res.message,
+        show: true,
+      });
+
+    setErr({
+      ...err,
+      type: "success",
+      msg: res.message,
+      show: true,
+    });
+
+    await fetchNotes();
+  };
+
   return (
     <AppContext.Provider
-      value={{ note, _handleOnchange, _handleSave, err, _closeAlert }}
+      value={{
+        note,
+        _handleOnchange,
+        _handleSave,
+        err,
+        _closeAlert,
+        _removeNote,
+      }}
     >
       {props.children}
     </AppContext.Provider>
