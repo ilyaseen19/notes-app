@@ -1,5 +1,6 @@
 import React from "react";
-import { AuthContext } from "../libs/context/authContext";
+import AppContextProvider from "../context/appContext";
+import { AuthContext } from "../context/authContext";
 import MainApp from "./app";
 import Auth from "./auth";
 
@@ -8,5 +9,9 @@ export default function Main() {
 
   if (!isLogged) return <Auth />;
 
-  return <MainApp />;
+  return (
+    <AppContextProvider>
+      <MainApp />
+    </AppContextProvider>
+  );
 }

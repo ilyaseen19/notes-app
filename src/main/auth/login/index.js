@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../../libs/context/authContext";
+import { AuthContext } from "../../../context/authContext";
 
 export default function Login() {
   const { _login } = React.useContext(AuthContext);
+  
   return (
     <div className="card card-outline card-primary">
       <div className="card-header text-center">

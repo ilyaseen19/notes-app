@@ -1,4 +1,4 @@
-import AuthContextProvider from "./libs/context/authContext";
+import AuthContextProvider from "./context/authContext";
 import Main from "./main";
 
 function App() {
